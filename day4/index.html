@@ -1,0 +1,46 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickNotes - Day 4</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+    <header class="page-header">
+        <h1>QuickNotes</h1>
+        <p>Your thoughts, saved as you type.</p>
+    </header>
+
+    <main class="container">
+        <section class="note-card">
+            <label for="note-text">Write your note</label>
+
+            <textarea
+                id="note-text"
+                maxlength="200"
+                rows="8"
+                placeholder="Start writing your note here..."
+            ></textarea>
+
+            <div class="counter-group" aria-live="polite">
+                <p id="char-count">0 / 200 characters</p>
+                <p id="word-count">0 words</p>
+            </div>
+
+            <div class="button-group">
+                <button id="clear-btn" type="button">Clear</button>
+                <button id="theme-toggle" type="button">Dark mode</button>
+            </div>
+
+            <p class="hint">Your draft is saved automatically in this browser. Press Escape to clear it.</p>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 QuickNotes</p>
+    </footer>
+</body>
+</html>
