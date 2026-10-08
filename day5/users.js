@@ -1,75 +1,66 @@
-const loadButton = document.getElementById("load-users");
-const filterInput = document.getElementById("filter-input");
-const status = document.getElementById("status");
-const usersList = document.getElementById("users-list");
-
-let users = [];
-
-async function loadUsers() {
-  loadButton.disabled = true;
-  status.textContent = "Loading users...";
-
-  try {
-    const response = await fetch(
-      "https://jsonplaceholder.typicode.com/users"
-    );
-
-    if (!response.ok) {
-      throw new Error(`Request failed with status ${response.status}`);
-    }
-
-    users = await response.json();
-
-    renderUsers(users);
-    status.textContent = `${users.length} users loaded successfully.`;
-  } catch (error) {
-    console.error(error);
-    status.textContent = "Error loading users. Please try again.";
-  } finally {
-    loadButton.disabled = false;
-  }
-}
-
-function renderUsers(list) {
-  usersList.innerHTML = "";
-
-  if (list.length === 0) {
-    status.textContent = "No users match your filter.";
+const USERS_URL = "https://jsonplaceholder.typicode.com/users";
+ 
+const loadBtn = document.querySelector("#load-users");
+const filterInput = document.querySelector("#filter-input");
+const statusText = document.querySelector("#status");
+const list = document.querySelector("#users-list");
+ 
+let users = []; // filled once by loadUsers()
+ 
+function renderUsers(usersToShow) {
+  list.innerHTML = "";
+ 
+  if (usersToShow.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = users.length
+      ? "No users match your filter."
+      : "No users loaded yet.";
+    list.appendChild(li);
     return;
   }
-
-  list.forEach((user) => {
-    const listItem = document.createElement("li");
-
-    const name = document.createElement("h2");
+ 
+  usersToShow.forEach((user) => {
+    const li = document.createElement("li");
+ 
+    const name = document.createElement("strong");
     name.textContent = user.name;
-
-    const email = document.createElement("p");
-    email.textContent = `Email: ${user.email}`;
-
-    const city = document.createElement("p");
-    city.textContent = `City: ${user.address.city}`;
-
-    const company = document.createElement("p");
-    company.textContent = `Company: ${user.company.name}`;
-
-    listItem.appendChild(name);
-    listItem.appendChild(email);
-    listItem.appendChild(city);
-    listItem.appendChild(company);
-
-    usersList.appendChild(listItem);
+ 
+    const details = document.createElement("p");
+    details.textContent =
+      `${user.email} · ${user.address.city} · ${user.company.name}`;
+ 
+    li.append(name, details);
+    list.appendChild(li);
   });
 }
-
-loadButton.addEventListener("click", loadUsers);
-
-filterInput.addEventListener("input", () => {
-  const searchText = filterInput.value.toLowerCase();
-
-  const filteredUsers = users.filter((user) =>
-    user.name.toLowerCase().includes(searchText)
+ 
+async function loadUsers() {
+  statusText.textContent = "Loading users...";
+  loadBtn.disabled = true;
+ 
+  try {
+    const response = await fetch(USERS_URL);
+    if (!response.ok) {
+      throw new Error(`Server responded with status ${response.status}`);
+    }
+    users = await response.json();
+    renderUsers(users);
+    statusText.textContent = `Loaded ${users.length} users.`;
+  } catch (error) {
+    console.error(error);
+    statusText.textContent = "Could not load users. Please try again.";
+  } finally {
+    loadBtn.disabled = false;
+  }
+}
+ 
+function applyFilter() {
+  const text = filterInput.value.trim().toLowerCase();
+  const matches = users.filter((user) =>
+    user.name.toLowerCase().includes(text)
   );
-
-  renderUsers(filteredUsers);
-});
+  renderUsers(matches);
+}
+ 
+loadBtn.addEventListener("click", loadUsers);
+filterInput.addEventListener("input", applyFilter);
