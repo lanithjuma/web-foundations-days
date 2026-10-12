@@ -86,3 +86,4 @@ each photo's metadata: id, owner, caption, time and the file's URL.
    far cheaper and more reliable than storing and serving hundreds of
    terabytes from our own servers.
 Step 3 - Check your reasoning. The most important insight is separating large files (object storage plus CDN) from small structured data (the database). This pattern is used by almost every app that handles images, video or documents. The second insight is moving slow work (thumbnails) into a queue so the user gets a fast response.
+
